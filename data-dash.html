@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Data Dash – Learn Data Science by Playing</title>
+<style>
+:root{--bg:#0a0e27;--panel:#141a3c;--ink:#eef1ff;--mut:#9aa6d6;--acc:#ffd23f;--ok:#3ddc97;--bad:#ff5d73;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+#g{position:fixed;inset:0;width:100%;height:100%;touch-action:none}
+#pg{position:fixed;top:0;left:0;right:0;height:5px;background:#0006}#pgi{display:block;height:100%;width:0;background:linear-gradient(90deg,#3ddc97,#ffd23f)}
+#hud{position:fixed;top:calc(env(safe-area-inset-top,0px) + 6px);left:0;right:60px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:6px;font-weight:700;font-size:14px;pointer-events:none}
+#hud span{background:#0a0e27bb;padding:4px 10px;border-radius:20px}
+#pb,#jb{position:fixed;border:0;color:#fff;font-weight:800;cursor:pointer;background:#2a3470dd;border-radius:50%}
+#pb{top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;width:44px;height:44px;font-size:18px}
+#jb{bottom:calc(env(safe-area-inset-bottom,0px) + 16px);right:14px;width:74px;height:74px;font-size:12px;background:#ff7a59dd;box-shadow:0 0 18px #ff7a59}
+#toast,#fbk{position:fixed;left:50%;transform:translateX(-50%);background:#10163f;border:2px solid var(--acc);padding:8px 16px;border-radius:12px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;text-align:center;max-width:92vw}
+#toast{bottom:20%}#fbk{top:calc(env(safe-area-inset-top,0px) + 56px);width:min(520px,92vw);font-weight:400;z-index:3;border-width:3px}
+#hint{position:fixed;bottom:4px;left:0;right:0;text-align:center;font-size:12px;color:var(--mut);pointer-events:none}
+.ov{position:fixed;inset:0;background:#05081c88;display:none;align-items:center;justify-content:center;padding:8px;overflow:auto;z-index:5}
+.panel{position:relative;background:var(--panel);border:1px solid #2a3470;border-radius:18px;padding:18px;width:min(980px,96vw);max-height:94vh;overflow:auto;line-height:1.45}
+h1{margin:0 0 4px;font-size:30px;color:var(--acc)}h2{margin:0 0 6px}h3{margin:10px 0 4px}
+.mut{color:var(--mut)}.row{display:flex;gap:16px;flex-wrap:wrap}.col{flex:1 1 300px;min-width:0}
+.b{background:linear-gradient(#ffd23f,#ffa62b);color:#201400;border:0;border-radius:12px;padding:11px 20px;font-weight:800;font-size:16px;cursor:pointer;margin:8px 8px 0 0}
+.b:disabled{filter:grayscale(1);opacity:.5;cursor:not-allowed}.b.s{background:#2a3470;color:var(--ink)}.b.on{outline:3px solid #fff}
+canvas.lab{width:100%;height:auto;border-radius:10px;display:block;margin-bottom:6px}
+input[type=range]{width:100%}.ins{background:#0d1232;border-left:4px solid var(--acc);padding:8px 10px;border-radius:8px;margin:8px 0;min-height:44px}
+.learn{background:#0f3a2866;border:2px solid var(--ok);border-radius:12px;padding:10px 12px;margin:8px 0;font-size:15px}
+.how{background:#3a2a0f66;border:2px dashed var(--acc);border-radius:12px;padding:8px 12px;margin:8px 0;font-weight:700}
+.ms{margin:8px 0;font-size:15px}table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid #2a3470;padding:4px 6px;text-align:left}
+input,select,textarea{background:#0d1232;color:var(--ink);border:1px solid #2a3470;border-radius:8px;padding:6px;font:inherit}
+ul{margin:4px 0;padding-left:20px}
+.menu{text-align:center;background:linear-gradient(160deg,#1a1f55e6,#3a1458e6);backdrop-filter:blur(6px);overflow:hidden}
+.logo{font-size:clamp(44px,10vw,92px);font-weight:900;letter-spacing:3px;margin:4px 0;line-height:1;background:linear-gradient(90deg,#ffd23f,#ff7a59,#f06595,#4dabf7,#ffd23f);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 6s linear infinite}
+@keyframes sh{to{background-position:300% 0}}
+.cds{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.cd{flex:1 1 210px;max-width:270px;background:#0d1232cc;border:2px solid;border-radius:16px;padding:12px;text-align:left;font-size:14px;transition:transform .2s}.cd:hover{transform:translateY(-5px) rotate(-1deg)}
+.cd i{font-size:36px;display:block;font-style:normal}
+.start{font-size:22px;padding:14px 44px;animation:pl 1.4s infinite}@keyframes pl{50%{transform:scale(1.07)}}
+.fl{position:absolute;font-size:30px;opacity:.7;animation:fl 5s ease-in-out infinite}@keyframes fl{50%{transform:translateY(-14px) rotate(12deg)}}
+.keys{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;font-size:13px}.keys span{background:#0d1232;border:1px solid #2a3470;border-radius:8px;padding:4px 10px}
+details{text-align:left;margin-top:10px}summary{cursor:pointer;color:var(--acc);font-weight:700}
+</style></head><body>
+<canvas id="g"></canvas><div id="pg"><i id="pgi"></i></div>
+<div id="hud"><span id="hr"></span><span id="hl"></span><span id="hc"></span><span id="hs"></span></div>
+<button id="pb" onclick="togglePause()" title="Pause">⏸</button><button id="jb" onpointerdown="jump()">⤒<br>JUMP</button>
+<div id="toast"></div><div id="fbk"></div><div id="hint">◀ ▶ / A D / drag to move · Space / ▲ / swipe up to jump · P to pause</div>
+<div id="ov" class="ov"></div>
+<script>
+const $=id=>document.getElementById(id),cv=$('g'),cx=cv.getContext('2d');
+let W,H,R,HZ,YB,cam=0;
+function rs(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);R=W<700?W*.44:Math.min(W*.3,H*.62);HZ=H*.36;YB=H*.9}
+addEventListener('resize',rs);rs();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function gauss(){let u=0;while(!u)u=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*Math.random())}
+let AC;function beep(f,d=.08){try{AC=AC||new AudioContext();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type='square';g.gain.value=.03;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+function ov(h){const e=$('ov');if(h==null){e.style.display='none';e.innerHTML=''}else{e.innerHTML=h;e.style.display='flex'}}
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.style.opacity=1;clearTimeout(tt);tt=setTimeout(()=>t.style.opacity=0,2200)}
+let ft;function fbk(ok,q,extra){const e=$('fbk');e.style.borderColor=ok?'#3ddc97':'#ff5d73';e.innerHTML=`<b>${ok?'✅ Correct! +200 points':'❌ Wrong lane'}</b>${extra||''}<br>Answer: <b>${q.o[q.ans]}</b><br><span class="mut">${q.why}</span>`;e.style.opacity=1;clearTimeout(ft);ft=setTimeout(()=>e.style.opacity=0,7000)}
+const LX=[-.62,0,.62],CON=['Overfitting','Sampling','Causation'],nl=x=>x<-.31?0:x>.31?2:1;
+let S={mode:'menu',pz:0,px:0,tl:0,lane:1,lives:3,coins:0,score:0,gate:0,gz:0,objs:[],ci:0,invul:0,shake:0,res:{},qd:null,plan:[],si:0,cl:0,cp:0,jy:0,vy:0,spd:17,t:0,za:0,paused:0,zin:0},LOG=[];
+try{LOG=JSON.parse(localStorage.getItem('ddlog')||'[]')}catch(e){}
+let HIST=[],NAME='Player';try{HIST=JSON.parse(localStorage.getItem('ddhist')||'[]');NAME=localStorage.getItem('ddname')||'Player'}catch(e){}
+function setName(v){NAME=v.trim().slice(0,20)||'Player';try{localStorage.setItem('ddname',NAME)}catch(e){}}
+function saveHist(win){HIST.push({d:new Date().toLocaleString(),n:esc(NAME),w:win?1:0,s:S.score,c:S.coins,a:S.acc,o:['Overfitting','Sampling','Causation'].map(k=>[S.res[k].filter(x=>x).length,S.res[k].length])});if(HIST.length>100)HIST.shift();try{localStorage.setItem('ddhist',JSON.stringify(HIST))}catch(e){}}
+function histHTML(){const n=HIST.length;if(!n)return '<p class="mut">No games saved yet — finish a run (win or lose) and it appears here.</p>';const w=HIST.filter(x=>x.w).length,best=Math.max(...HIST.map(x=>x.s)),av=Math.round(HIST.reduce((a,x)=>a+x.a,0)/n);
+const bars=['🧠 Overfitting','🎲 Sampling','☀️ Causation'].map((t,i)=>{const c=HIST.reduce((a,x)=>a+x.o[i][0],0),q=HIST.reduce((a,x)=>a+x.o[i][1],0),p=q?Math.round(100*c/q):0;return `<div style="margin:4px 0">${t}: <b>${p}%</b> (${c}/${q})<div style="background:#0d1232;border-radius:6px;height:10px"><div style="width:${p}%;height:10px;border-radius:6px;background:linear-gradient(90deg,#3ddc97,#ffd23f)"></div></div></div>`}).join('');
+return `<p>Games <b>${n}</b> · Wins <b>${w}</b> · Best score <b>${best}</b> · Avg accuracy <b>${av}%</b></p>${bars}<table><tr><th>When</th><th>Player</th><th>Result</th><th>Score</th><th>Coins</th><th>Quiz %</th></tr>${HIST.slice(-10).reverse().map(x=>`<tr><td>${x.d}</td><td>${x.n}</td><td>${x.w?'🏆 Win':'💀 Lost'}</td><td>${x.s}</td><td>${x.c}</td><td>${x.a}%</td></tr>`).join('')}</table>`}
+function showHist(){ov(`<div class="panel"><h2>📈 My history</h2><p class="mut">Saved on this device after every game.</p>${histHTML()}<button class="b" onclick="menu()">Back</button><button class="b s" onclick="HIST=[];try{localStorage.removeItem('ddhist')}catch(e){}showHist()">Clear history</button></div>`)}
+const STARS=Array.from({length:70},()=>[Math.random(),Math.random(),Math.random()*.8+.2]),MT=Array.from({length:15},()=>.4+Math.random()*.9),CL=Array.from({length:6},(_,i)=>({x:i/6,y:.05+Math.random()*.18,s:.6+Math.random()*.8})),BD=[0,1,2,3].map(i=>({x:i*.3,y:Math.random()*.4}));
+/* ---------- simple theory questions ---------- */
+const QB={
+Overfitting:[
+{q:'What is overfitting?',o:['A model that memorises its training examples, even the noise','A model that is too simple to learn anything','A model that runs too slowly'],why:'Like a student who memorises old exam answers: great on the old paper, bad on a new one.'},
+{q:'How do we check if a model is overfitting?',o:['Test it on new data it has never seen','Look only at the data it studied','Make the model more complicated'],why:'A good model must work on NEW data, not just the examples it already saw.'},
+{q:'A model is perfect on its training examples but fails on new ones. This is called…',o:['Overfitting','Underfitting','A perfect model'],why:'Perfect on old examples + bad on new ones = memorising, not learning.'},
+{q:'Which model is most likely to overfit?',o:['One that is far too complicated for the amount of data','One that is very simple','One that has seen lots of varied data'],why:'A very flexible model can bend to fit every bit of noise.'},
+{q:'What is “test data” used for?',o:['To check the model on examples it never studied','To teach the model more','To help the model memorise'],why:'Test data is kept hidden so it shows how the model handles new situations.'},
+{q:'A line that is too simple and misses the pattern is called…',o:['Underfitting','Overfitting','Sampling'],why:'Too simple = misses the pattern (underfitting). Too complicated = memorises noise (overfitting).'}],
+Sampling:[
+{q:'What is the fairest way to choose a sample?',o:['Pick people at random','Ask only people who are easy to reach','Ask only people who agree with you'],why:'Random picking gives everyone an equal chance, so the sample looks like the whole group.'},
+{q:'Why is asking only a basketball club about height a bad idea?',o:['It is biased: they are not like everyone','It is too random','It is too fair'],why:'That unfair picking is called bias. A bigger sample of the same group does not cure it.'},
+{q:'What is a “sample”?',o:['A small part of a group used to learn about the whole group','The whole group','A wrong answer'],why:'We usually can’t ask everyone, so we ask a sample and guess about everybody.'},
+{q:'What does a bigger random sample usually give you?',o:['Less luck, so more reliable guesses','A guaranteed perfect answer','More bias'],why:'More fair samples mean the guesses wobble less.'},
+{q:'A survey is posted only on a gaming website. What is the problem?',o:['Only gamers answer, so it may be biased','Too many people answer','It is perfectly fair'],why:'Only one kind of person sees it, so the result may not match everyone.'},
+{q:'What do we call unfair picking that gives a wrong picture?',o:['Bias','Fitting','Correlation'],why:'Bias pushes the answer in one direction, away from the truth.'}],
+Causation:[
+{q:'Ice-cream sales and drownings rise together. What is the likely reason?',o:['Hot weather causes both','Ice cream makes people drown','Drowning makes people buy ice cream'],why:'Heat is the hidden third factor (a confounder) behind both.'},
+{q:'“Correlation” means…',o:['Two things move together — it does not prove one causes the other','One thing definitely causes the other','The data must be wrong'],why:'Moving together is only a clue. Proving a cause needs more evidence.'},
+{q:'What is a “confounder”?',o:['A hidden factor that affects both things','A mistake in the data','A very big number'],why:'Like the heat that drives both ice-cream sales and swimming.'},
+{q:'People who sleep with shoes on often wake with headaches. Most likely reason?',o:['Drinking the night before causes both','Shoes cause headaches','Headaches make people keep shoes on'],why:'A hidden cause (a late night) explains both. Together does not mean because.'},
+{q:'What can best show that A really causes B?',o:['A fair experiment where only A is changed','Seeing A and B rise together','A strong feeling'],why:'Changing only A while keeping everything else the same shows its real effect.'},
+{q:'A correlation score r close to 0 means…',o:['No clear link between the two things','A very strong link','The data is perfect'],why:'Near 1 = strong link, near 0 = no link.'}]};
+const TOP=['Overfitting','Sampling','Causation'];
+function pick(){let seen={};try{seen=JSON.parse(localStorage.getItem('ddseen')||'{}')}catch(e){}const out={};
+TOP.forEach(t=>{let sn=seen[t]||[],pool=QB[t].map((_,i)=>i).filter(i=>!sn.includes(i));if(pool.length<2){sn=[];pool=QB[t].map((_,i)=>i)}pool.sort(()=>Math.random()-.5);const ch=pool.slice(0,2);seen[t]=sn.concat(ch);out[t]=ch.map(i=>({...QB[t][i],c:t}))});
+try{localStorage.setItem('ddseen',JSON.stringify(seen))}catch(e){}return out}
+/* ---------- plan & world ---------- */
+const SEG={gate:230,lab:150,q:300};
+function mkPlan(){const p=[],Q=pick();let g=0,n=0;p.push({t:'gate',n:++g},{t:'gate',n:++g},{t:'gate',n:++g});
+TOP.forEach((t,l)=>{p.push({t:'lab',l},{t:'q',l,q:Q[t][0],n:++n},{t:'q',l,q:Q[t][1],n:++n,g:++g,fin:l===2?1:0})});return p}
+function shuf(q){const i=[0,1,2].sort(()=>Math.random()-.5);return{q:q.q,o:i.map(k=>q.o[k]),ans:i.indexOf(0),why:q.why,c:q.c}}
+function gen(sg){const s=S.segStart,e=S.gz,lvl=Math.min(.9,.4+S.si*.03),free=sg.t==='q'?e-135:e-20,ob=[],cn=[];
+for(let z=s+30;z<free;z+=13)if(Math.random()<lvl){const x=Math.random()*1.6-.8;ob.push({t:'o',z,x,w:.32});if(Math.random()<S.si*.025)ob.push({t:'o',z,x:x>0?x-.9:x+.9,w:.32})}
+for(let z=s+15;z<free;z+=3){const x=.7*Math.sin(z/19);if(!ob.some(b=>Math.abs(b.z-z)<3&&Math.abs(b.x-x)<.4))cn.push({t:'c',z,x})}
+if(sg.t==='q')for(let z=e-125;z<e-8;z+=10)LX.forEach(x=>cn.push({t:'c',z,x}));
+S.objs=S.objs.concat(ob,cn).sort((a,b)=>a.z-b.z);S.ci=0}
+function startSeg(){const sg=S.plan[S.si];if(sg.l!=null)S.cl=sg.l;S.segStart=S.pz;S.gz=S.pz+SEG[sg.t];S.cp=S.pz;S.warn=0;S.lives=3;S.zin=0;S.qd=sg.t==='q'?shuf(sg.q):null;gen(sg)}
+function nextSeg(){S.si++;startSeg()}
+function startGame(){ov(null);const p=mkPlan();Object.assign(S,{mode:'run',plan:p,si:0,total:p.reduce((a,s)=>a+SEG[s.t],0),pz:0,px:0,lane:1,lives:3,coins:0,score:0,gate:0,ll:2,objs:[],jy:0,vy:0,spd:17,paused:0,res:{Overfitting:[],Sampling:[],Causation:[]}});startSeg()}
+function reach(){const sg=S.plan[S.si];
+if(sg.t==='gate'){S.gate++;S.coins+=20;S.score+=20;beep(660,.2);if(sg.fin)return endGame(1);toast(`Gate ${sg.n}/6 ✔  +20`);nextSeg()}
+else if(sg.t==='lab'){S.mode='lab';[lab1,lab2,lab3][sg.l]()}
+else{const q=S.qd,ok=S.lane===q.ans;S.res[q.c].push(ok);if(ok){S.score+=200;S.coins+=25;beep(880,.25)}else{S.ll--;beep(180,.3)}fbk(ok,q,ok?'':` — 🛟 ${Math.max(0,S.ll)} lifeline${S.ll===1?'':'s'} left`);if(S.ll<=0){S.mode='over';setTimeout(()=>endGame(0),2200);return}if(sg.g){S.gate++;S.coins+=20;S.score+=20}if(sg.fin){S.mode='over';setTimeout(()=>endGame(1),2600);return}nextSeg()}}
+function go(){ov(null);S.mode='run';nextSeg()}
+function crash(){toast('💥 Crashed! Back to the start of this stretch');S.pz=S.cp;S.lives=3;S.ci=0;S.zin=0;S.score=Math.max(0,S.score-50)}
+function upd(dt){S.invul=Math.max(0,S.invul-dt);S.shake=Math.max(0,S.shake-dt);S.t+=dt;
+if(S.mode==='menu'){S.pz+=9*dt;if(S.pz>2000)S.pz=0;S.px=Math.sin(S.pz/12)*.5;return}
+if(S.mode!=='run'||S.paused)return;
+const sg=S.plan[S.si],d=S.gz-S.pz,zone=sg.t==='q'&&d<130;S.za=sg.t==='q'?clamp((130-d)/15,0,1):0;
+S.spd+=((zone?11:Math.min(24,17+S.si*.6))-S.spd)*Math.min(1,dt*2);S.pz+=S.spd*dt;
+if(S.jy>0||S.vy>0){S.vy-=9*dt;S.jy+=S.vy*dt;if(S.jy<=0){S.jy=0;S.vy=0}}
+const old=S.px;
+if(zone){if(!S.zin){S.zin=1;S.lane=nl(S.px);toast('Pick a lane — take your time!')}S.px+=(LX[S.lane]-S.px)*Math.min(1,dt*10)}else{S.zin=0;S.px=clamp(S.px+((K.r||0)-(K.l||0))*1.7*dt,-.9,.9)}
+S.tl+=(clamp((S.px-old)/Math.max(dt,.001)*.18,-.3,.3)-S.tl)*Math.min(1,dt*10);
+if(sg.t==='lab'&&!S.warn&&d<110){S.warn=1;toast('🔬 Lab ahead — learn something new!')}
+const o=S.objs;while(S.ci<o.length&&o[S.ci].z<S.pz-3)S.ci++;
+for(let j=S.ci;j<o.length&&o[j].z<S.pz+1.5;j++){const b=o[j];if(b.hit)continue;const dz=b.z-S.pz;
+if(b.t==='c'){if(Math.abs(dz)<1&&Math.abs(b.x-S.px)<.2&&S.jy<.6){b.hit=1;S.coins++;S.score+=10;beep(1200,.04)}}
+else if(S.invul<=0&&S.jy<.42&&Math.abs(dz)<.9&&Math.abs(b.x-S.px)<b.w/2+.1){S.lives--;S.invul=1.6;S.shake=.4;beep(120,.2);if(S.lives<=0)crash()}}
+if(S.pz>=S.gz)reach()}
+/* ---------- input ---------- */
+const K={};function mv(d){S.lane=clamp(S.lane+d,0,2);beep(500,.03)}
+function jump(){if(S.mode==='run'&&!S.paused&&S.jy===0){S.vy=3.7;S.jy=.001;beep(700,.05)}}
+function togglePause(){if(S.mode!=='run')return;if(S.paused){S.paused=0;ov(null)}else{S.paused=1;ov(`<div class="panel" style="width:min(380px,92vw);text-align:center"><h2>⏸ Paused</h2><button class="b" onclick="togglePause()">▶ Resume</button><br><button class="b s" onclick="startGame()">↺ Restart</button><br><button class="b s" onclick="S.paused=0;menu()">🏠 Main menu</button></div>`)}}
+addEventListener('keydown',e=>{const k=e.key;if(['ArrowLeft','a','A'].includes(k)){K.l=1;if(S.zin&&S.mode==='run'&&!S.paused)mv(-1)}if(['ArrowRight','d','D'].includes(k)){K.r=1;if(S.zin&&S.mode==='run'&&!S.paused)mv(1)}if([' ','ArrowUp','w','W'].includes(k)){jump();e.preventDefault()}if(k==='p'||k==='P'||k==='Escape')togglePause();if(k.startsWith('Arrow'))e.preventDefault()});
+addEventListener('keyup',e=>{if(['ArrowLeft','a','A'].includes(e.key))K.l=0;if(['ArrowRight','d','D'].includes(e.key))K.r=0});
+let pd=null;cv.addEventListener('pointerdown',e=>pd={x:e.clientX,y:e.clientY,l:e.clientX});
+cv.addEventListener('pointermove',e=>{if(!pd||S.mode!=='run'||S.paused)return;if(!S.zin)S.px=clamp(S.px+(e.clientX-pd.l)/R*1.3,-.9,.9);pd.l=e.clientX});
+cv.addEventListener('pointerup',e=>{if(pd&&S.mode==='run'&&!S.paused){const dx=e.clientX-pd.x,dy=e.clientY-pd.y;if(dy<-40&&-dy>Math.abs(dx))jump();else if(S.zin)mv(Math.abs(dx)>30?(dx>0?1:-1):(e.clientX>W/2?1:-1))}pd=null});
+/* ---------- rendering ---------- */
+function P(d,x,h){const s=1/(1+d*.06);return[W/2+(x-cam)*R*s,HZ+(YB-HZ)*s-(h||0)*R*s,s]}
+function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
+function wrap(t,mw){const w=t.split(' '),L=[];let l='';for(const x of w){const n=l?l+' '+x:x;if(cx.measureText(n).width>mw&&l){L.push(l);l=x}else l=n}L.push(l);return L}
+const BUG=['NaN','null','bias','noise','n/a'],ZC=['#4dabf7','#f06595','#51cf66'];
+function env(it,p){const u=R*p[2],x=p[0],y=p[1];
+if(it===0||it===3){cx.fillStyle='#6b4423';cx.fillRect(x-.03*u,y-.4*u,.06*u,.4*u);
+if(it===0){cx.fillStyle='#2e9e4f';cx.beginPath();cx.arc(x,y-.55*u,.24*u,0,7);cx.arc(x-.14*u,y-.45*u,.17*u,0,7);cx.arc(x+.14*u,y-.45*u,.17*u,0,7);cx.fill()}
+else{cx.fillStyle='#1f7a4d';for(let i=0;i<3;i++){const by=y-.3*u-i*.22*u;cx.beginPath();cx.moveTo(x-.22*u+i*.04*u,by);cx.lineTo(x+.22*u-i*.04*u,by);cx.lineTo(x,by-.4*u);cx.fill()}}}
+else if(it===1){cx.fillStyle='#8892b0';cx.fillRect(x-.015*u,y-1.1*u,.03*u,1.1*u);cx.shadowColor='#ffd23f';cx.shadowBlur=14;cx.fillStyle='#ffe38a';cx.beginPath();cx.arc(x,y-1.12*u,.07*u,0,7);cx.fill();cx.shadowBlur=0}
+else if(it===2){cx.fillStyle='#2f8f4a';cx.beginPath();cx.ellipse(x,y-.1*u,.2*u,.12*u,0,0,7);cx.fill();cx.fillStyle='#ff8da0';[-.08,.04,.1].forEach(k=>{cx.beginPath();cx.arc(x+k*u,y-.14*u,.025*u,0,7);cx.fill()})}
+else if(it===4){cx.fillStyle='#e8e8f4';cx.beginPath();cx.moveTo(x-.04*u,y);cx.lineTo(x+.04*u,y);cx.lineTo(x+.02*u,y-1*u);cx.lineTo(x-.02*u,y-1*u);cx.fill();cx.save();cx.translate(x,y-u);cx.rotate(S.t*1.5);for(let i=0;i<4;i++){cx.rotate(Math.PI/2);cx.fillRect(-.02*u,-.45*u,.04*u,.45*u)}cx.restore()}
+else{cx.fillStyle='#7a7f99';cx.beginPath();cx.ellipse(x,y-.07*u,.15*u,.09*u,0,0,7);cx.fill()}}
+function draw(){cam=S.px*.5;cx.save();if(S.shake>0)cx.translate((Math.random()-.5)*S.shake*20,(Math.random()-.5)*S.shake*20);
+let g=cx.createLinearGradient(0,0,0,HZ);g.addColorStop(0,'#060922');g.addColorStop(.55,'#3b1c78');g.addColorStop(1,'#ff7e5f');cx.fillStyle=g;cx.fillRect(-20,-20,W+40,HZ+20);
+STARS.forEach(s=>{cx.fillStyle=`rgba(255,255,255,${s[2]})`;cx.fillRect(s[0]*W,s[1]*HZ*.6,1.5,1.5)});
+cx.fillStyle='#ffd23f';cx.beginPath();cx.arc(W/2-cam*30,HZ-R*.1,R*.26,0,7);cx.fill();
+cx.fillStyle='rgba(255,255,255,.75)';CL.forEach(c=>{const x=((c.x+S.t*.01*c.s)%1.3-.15)*W-cam*12,y=c.y*HZ*2.2,r=R*.1*c.s;cx.beginPath();cx.ellipse(x,y,r*1.6,r*.6,0,0,7);cx.ellipse(x-r,y+r*.1,r,r*.45,0,0,7);cx.ellipse(x+r,y+r*.1,r*1.1,r*.5,0,0,7);cx.fill()});
+cx.strokeStyle='#fff';cx.lineWidth=2;BD.forEach(b=>{const x=((b.x+S.t*.03)%1.2-.1)*W,y=HZ*(.25+b.y)+Math.sin(S.t*3+b.x*9)*6,f=Math.sin(S.t*9+b.x*5)*4;cx.beginPath();cx.moveTo(x-9,y-f);cx.quadraticCurveTo(x-4,y-5,x,y);cx.quadraticCurveTo(x+4,y-5,x+9,y-f);cx.stroke()});
+cx.fillStyle='#1b1450';cx.beginPath();cx.moveTo(-80,HZ);for(let i=-1;i<=13;i++)cx.lineTo(i*W/12-cam*40,HZ-MT[i+1]*R*.35);cx.lineTo(W+80,HZ);cx.fill();
+cx.fillStyle='#14513f';cx.beginPath();cx.moveTo(-80,HZ);for(let i=-1;i<=13;i++)cx.lineTo(i*W/12-cam*70,HZ-MT[(i*3+7)%14+1]*R*.14);cx.lineTo(W+80,HZ);cx.fill();
+g=cx.createLinearGradient(0,HZ,0,H);g.addColorStop(0,'#14513f');g.addColorStop(1,'#0e3a33');cx.fillStyle=g;cx.fillRect(0,HZ,W,H-HZ);
+const m=S.pz%5,base=Math.floor(S.pz/5);
+for(let k=30;k>=0;k--){const dn=Math.max(0,k*5-m),df=k*5-m+5,a=P(dn,0,0),b=P(df,0,0),wn=R*a[2]*1.05,wf=R*b[2]*1.05,n=k+base,ev=n%2;
+if(ev){cx.fillStyle='rgba(255,255,255,.04)';cx.fillRect(0,b[1],W,a[1]-b[1])}
+cx.fillStyle=ev?'#2a3270':'#1f2760';cx.beginPath();cx.moveTo(a[0]-wn,a[1]);cx.lineTo(a[0]+wn,a[1]);cx.lineTo(b[0]+wf,b[1]);cx.lineTo(b[0]-wf,b[1]);cx.fill();
+if(S.za>0.01&&S.mode!=='menu')LX.forEach((lx,i)=>{const p=P(dn,lx-.31,0),q=P(dn,lx+.31,0),r=P(df,lx+.31,0),s=P(df,lx-.31,0);cx.fillStyle=ZC[i]+Math.round(S.za*60).toString(16).padStart(2,'0');cx.beginPath();cx.moveTo(p[0],p[1]);cx.lineTo(q[0],q[1]);cx.lineTo(r[0],r[1]);cx.lineTo(s[0],s[1]);cx.fill()});
+cx.strokeStyle='#00e5ff';cx.lineWidth=Math.max(1,4*a[2]);cx.beginPath();cx.moveTo(a[0]-wn,a[1]);cx.lineTo(b[0]-wf,b[1]);cx.moveTo(a[0]+wn,a[1]);cx.lineTo(b[0]+wf,b[1]);cx.stroke();
+if(S.za>0.01&&ev){cx.strokeStyle=`rgba(255,255,255,${.6*S.za})`;cx.lineWidth=Math.max(1,3*a[2]);cx.beginPath();[-.31,.31].forEach(x=>{const p=P(dn,x,0),q=P(df,x,0);cx.moveTo(p[0],p[1]);cx.lineTo(q[0],q[1])});cx.stroke()}
+if(!ev)[-1,1].forEach(sd=>[1.5,2.3].forEach((ox,L)=>{const p=P(dn+2.5+L*1.2,sd*ox,0);env(Math.abs((n*5+(sd>0?3:0)+L*7)>>1)%6,p)}))}
+if(S.mode==='run'&&S.plan.length){const sg=S.plan[S.si],d=S.gz-S.pz;if(d<140)gate(d,sg.t==='gate'?(sg.fin?'🏁 FINISH':'GATE '+sg.n+'/6'):sg.t==='lab'?'🔬 LAB '+(sg.l+1)+'/3':(sg.g?'GATE '+sg.g+'/6 · ❓ PICK A LANE':'❓ ENTER YOUR LANE'),sg.t==='gate'?'#ffd23f':sg.t==='lab'?'#00e5ff':'#f06595')}
+const o=S.objs;for(let j=o.length-1;j>=0;j--){const b=o[j],d=b.z-S.pz;if(d<-3||d>140||b.hit)continue;cx.globalAlpha=Math.min(1,(140-d)/40);
+if(b.t==='c'){const p=P(d,b.x,.3),r=.11*R*p[2],rx=Math.max(1.5,r*Math.abs(Math.cos(S.t*4+b.z)));cx.fillStyle='#ffd23f';cx.strokeStyle='#b8860b';cx.lineWidth=Math.max(1,r*.25);cx.beginPath();cx.ellipse(p[0],p[1],rx,r,0,0,7);cx.fill();cx.stroke()}
+else{const p=P(d,b.x,0),pw=b.w*R*p[2],ph=.38*R*p[2];cx.fillStyle='#d63649';cx.fillRect(p[0]-pw/2,p[1]-ph,pw,ph);cx.fillStyle='#ff8da0';cx.beginPath();cx.moveTo(p[0]-pw/2,p[1]-ph);cx.lineTo(p[0]+pw/2,p[1]-ph);cx.lineTo(p[0]+pw*.43,p[1]-ph*1.25);cx.lineTo(p[0]-pw*.43,p[1]-ph*1.25);cx.fill();if(pw>34){cx.fillStyle='#fff';cx.font=`700 ${pw*.22}px monospace`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText(BUG[Math.floor(b.z)%5],p[0],p[1]-ph/2)}}
+cx.globalAlpha=1}
+player();cards();cx.restore()}
+function gate(d,label,col){const l=P(d,-1.05,0),r=P(d,1.05,0),s=l[2],pw=.12*R*s,h=1.5*R*s;cx.fillStyle=col;cx.shadowColor=col;cx.shadowBlur=18;cx.fillRect(l[0]-pw/2,l[1]-h,pw,h);cx.fillRect(r[0]-pw/2,r[1]-h,pw,h);cx.fillRect(l[0]-pw/2,l[1]-h-pw,r[0]-l[0]+pw,pw*1.4);cx.shadowBlur=0;cx.fillStyle='#fff';cx.font=`800 ${Math.max(8,.2*R*s)}px system-ui`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText(label,(l[0]+r[0])/2,l[1]-h-pw*2.2)}
+function player(){const p=P(0,S.px,0),u=R*.13;cx.save();if(S.invul>0&&Math.floor(S.invul*14)%2)cx.globalAlpha=.35;cx.translate(p[0],p[1]);cx.fillStyle='rgba(0,0,0,.4)';cx.beginPath();cx.ellipse(0,2,u*1.5*(1-S.jy*.3),u*.35,0,0,7);cx.fill();cx.translate(0,-S.jy*R);cx.rotate(S.tl);cx.shadowColor='#00e5ff';cx.shadowBlur=20;
+let g=cx.createLinearGradient(0,-u*1.6,0,0);g.addColorStop(0,'#9d8cff');g.addColorStop(1,'#4b36c9');cx.fillStyle=g;cx.beginPath();cx.moveTo(-u*1.3,-u*.15);cx.lineTo(-u*.9,-u*1.2);cx.lineTo(u*.9,-u*1.2);cx.lineTo(u*1.3,-u*.15);cx.fill();
+cx.fillStyle='#c9c0ff';cx.beginPath();cx.moveTo(-u*.9,-u*1.2);cx.lineTo(-u*.6,-u*1.6);cx.lineTo(u*.6,-u*1.6);cx.lineTo(u*.9,-u*1.2);cx.fill();
+cx.fillStyle='#00e5ff';cx.beginPath();cx.ellipse(0,-u,u*.45,u*.3,0,0,7);cx.fill();cx.fillStyle='#ff5d73';cx.fillRect(-u*1.1,-u*.4,u*.4,u*.18);cx.fillRect(u*.7,-u*.4,u*.4,u*.18);cx.restore()}
+function cards(){const q=S.qd;if(S.mode!=='run'||!q)return;const d=S.gz-S.pz;if(d>130)return;
+const t=Math.min(1,(130-d)/10),u=t-1,e=Math.max(0,1+2.7*u*u*u+1.7*u*u);cx.fillStyle=`rgba(4,6,28,${.22*t})`;cx.fillRect(0,0,W,H);
+const bw=Math.min(W*.94,780),fs=W<700?14:19;cx.font=`700 ${fs}px system-ui,sans-serif`;const ls=wrap(q.q,bw-28),bh=ls.length*fs*1.3+22,by=Math.max(48,H*.08);
+cx.save();cx.globalAlpha=t;cx.translate(W/2,by+bh/2);cx.scale(e,e);rr(-bw/2,-bh/2,bw,bh,14);cx.fillStyle='#10163f';cx.fill();cx.strokeStyle='#ffd23f';cx.lineWidth=3;cx.stroke();cx.fillStyle='#fff';cx.textAlign='center';cx.textBaseline='middle';ls.forEach((l,i)=>cx.fillText(l,0,(i-(ls.length-1)/2)*fs*1.3));cx.restore();
+const cw=R*.6,ch=Math.max(cw*.95,125),cy=by+bh+ch/2+22,f2=Math.max(12,Math.min(18,cw*.095));
+q.o.forEach((txt,i)=>{const sel=S.lane===i;cx.save();cx.globalAlpha=t;cx.translate(W/2+LX[i]*R,cy);cx.scale(e,e);if(sel){cx.shadowColor=ZC[i];cx.shadowBlur=26}rr(-cw/2,-ch/2,cw,ch,16);cx.fillStyle=sel?'#243080':'#10163f';cx.fill();cx.strokeStyle=ZC[i];cx.lineWidth=sel?6:3;cx.stroke();cx.shadowBlur=0;
+cx.fillStyle=ZC[i];cx.beginPath();cx.arc(-cw/2+18,-ch/2+18,14,0,7);cx.fill();cx.fillStyle='#0a0e27';cx.font='800 16px system-ui';cx.textAlign='center';cx.textBaseline='middle';cx.fillText('ABC'[i],-cw/2+18,-ch/2+19);
+cx.fillStyle='#fff';cx.font=`700 ${f2}px system-ui`;const L=wrap(txt,cw-20);L.forEach((l,k)=>cx.fillText(l,0,-ch/2+44+k*f2*1.25+(ch-60-L.length*f2*1.25)/2));if(sel){cx.fillStyle=ZC[i];cx.fillText('▼ YOU ARE HERE',0,ch/2+16)}cx.restore()})}
+function hud(){const sg=S.plan[S.si];$('hr').textContent=S.mode==='menu'||!sg?'🚀 Data Dash':'📍 '+(sg.t==='gate'?`Gate ${sg.n}/6`:sg.t==='lab'?`Lab ${sg.l+1}/3`:`Question ${sg.n}/6${sg.g?' · Gate '+sg.g+'/6':''}`);$('hl').textContent='❤'.repeat(Math.max(0,S.lives))+'  🛟 '+S.ll+' lifelines';$('hc').textContent='🪙 '+S.coins;$('hs').textContent='★ '+S.score;$('pgi').style.width=(S.mode==='menu'?0:Math.min(100,S.pz/S.total*100))+'%';const pl=S.mode==='run';$('pb').style.display=$('jb').style.display=pl?'block':'none';$('hint').style.display=pl?'block':'none'}
+let last=0;function loop(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;upd(dt);draw();hud();requestAnimationFrame(loop)}
+/* ---------- data-science maths ---------- */
+function fit(Pt,d){const n=d+1,A=[];for(let i=0;i<n;i++)A.push(new Array(n+1).fill(0));
+for(const[x,y]of Pt){const pw=[1];for(let k=1;k<2*n;k++)pw.push(pw[k-1]*x);for(let i=0;i<n;i++){for(let j=0;j<n;j++)A[i][j]+=pw[i+j];A[i][n]+=y*pw[i]}}
+for(let i=0;i<n;i++)A[i][i]+=1e-9;
+for(let i=0;i<n;i++){let p=i;for(let r=i+1;r<n;r++)if(Math.abs(A[r][i])>Math.abs(A[p][i]))p=r;[A[i],A[p]]=[A[p],A[i]];for(let r=i+1;r<n;r++){const f=A[r][i]/A[i][i];for(let c=i;c<=n;c++)A[r][c]-=f*A[i][c]}}
+const c=new Array(n);for(let i=n-1;i>=0;i--){let s=A[i][n];for(let j=i+1;j<n;j++)s-=A[i][j]*c[j];c[i]=s/A[i][i]}return c}
+const pv=(c,x)=>c.reduce((s,v,i)=>s+v*Math.pow(x,i),0),mse=(c,Pt)=>Pt.reduce((s,[x,y])=>s+(pv(c,x)-y)**2,0)/Pt.length,f1=x=>.8*Math.sin(2.2*x);
+function cor(a,b){const n=a.length,ma=a.reduce((s,v)=>s+v)/n,mb=b.reduce((s,v)=>s+v)/n;let x=0,y=0,z=0;for(let i=0;i<n;i++){const p=a[i]-ma,q=b[i]-mb;x+=p*q;y+=p*p;z+=q*q}return x/Math.sqrt(y*z)}
+/* ---------- labs (plain-language explainer + one tiny task) ---------- */
+function shell(t,plain,how,left,right){ov(`<div class="panel"><h2>${t}</h2><div class="learn">${plain}</div><div class="how">${how}</div><div class="row"><div class="col">${left}</div><div class="col">${right}<div id="ms" class="ms"></div><button id="go" class="b" disabled onclick="go()">Continue the run ▶</button></div></div></div>`)}
+function mis(t,b){$('ms').innerHTML=`<b>Your task:</b> ${b?'✅':'⬜'} ${t}`;$('go').disabled=!b}
+let LS1,LS2,LS3,POP,TALL;
+function lab1(){const tr=[],te=[];for(let i=0;i<10;i++){const x=-.95+1.9*i/9;tr.push([x,f1(x)+gauss()*.25])}for(let i=0;i<40;i++){const x=Math.random()*2-1;te.push([x,f1(x)+gauss()*.25])}
+const res=[];for(let d=1;d<=9;d++){const c=fit(tr,d);res[d]={c,tr:mse(c,tr),te:mse(c,te)}}LS1={res,tr,te,tried:new Set()};
+shell('🔬 Lab 1 · Overfitting — memorising vs understanding','<b>🧒 In plain words:</b> A <b>model</b> is a rule a computer learns from examples so it can guess new things. Imagine a student who <b>memorises</b> last year’s exam answers: perfect on the old paper, lost on a new one. That is <b>overfitting</b>. A student who truly <b>understands</b> does well on both.<br>• <b style="color:#00e5ff">Cyan dots</b> = examples the model studies &nbsp;• <b style="color:#ff7aa8">Pink rings</b> = new examples it has never seen &nbsp;• <b style="color:#ffd23f">Yellow line</b> = the rule it learned &nbsp;• <b>Error</b> = how wrong it is (smaller is better)','👉 Drag the “complexity” slider up to 8 or 9 and watch what happens to the two errors.','<canvas id="lc" class="lab" width="560" height="280"></canvas><canvas id="lc2" class="lab" width="560" height="110"></canvas><p class="mut" style="font-size:12px">Small chart: cyan = error on studied examples, pink = error on new examples.</p>','<label>Model complexity: <b id="dv">1</b> (1 = very simple, 9 = very complicated)</label><input id="sl" type="range" min="1" max="9" value="1" oninput="l1(+this.value)"><div id="ro"></div><div id="ins" class="ins"></div>');l1(1)}
+function l1(d){const L=LS1,r=L.res[d];L.tried.add(d);$('dv').textContent=d;const c=$('lc'),g=c.getContext('2d'),w=c.width,h=c.height,X=x=>30+(x+1)/2*(w-50),Y=y=>h/2-y*(h/2-18)/1.8;g.fillStyle='#0d1232';g.fillRect(0,0,w,h);
+g.strokeStyle='#3b4a8a';g.setLineDash([4,4]);g.beginPath();for(let i=0;i<=100;i++){const x=-1+i/50;i?g.lineTo(X(x),Y(f1(x))):g.moveTo(X(x),Y(f1(x)))}g.stroke();g.setLineDash([]);
+g.strokeStyle='#ffd23f';g.lineWidth=3;g.beginPath();for(let i=0;i<=140;i++){const x=-1+i/70,y=clamp(pv(r.c,x),-1.8,1.8);i?g.lineTo(X(x),Y(y)):g.moveTo(X(x),Y(y))}g.stroke();
+g.lineWidth=1.5;g.strokeStyle='#ff7aa8';L.te.forEach(([x,y])=>{g.beginPath();g.arc(X(x),Y(y),3.5,0,7);g.stroke()});g.fillStyle='#00e5ff';L.tr.forEach(([x,y])=>{g.beginPath();g.arc(X(x),Y(y),5,0,7);g.fill()});
+const c2=$('lc2'),q=c2.getContext('2d'),w2=c2.width,h2=c2.height,X2=k=>30+(k-1)/8*(w2-50),Y2=v=>h2-16-(Math.log10(v+1e-4)+4)/6*(h2-26);q.fillStyle='#0d1232';q.fillRect(0,0,w2,h2);q.fillStyle='#9aa6d6';q.font='11px system-ui';for(let k=1;k<=9;k++)q.fillText(k,X2(k)-3,h2-3);const T=[...L.tried].sort((a,b)=>a-b);
+[['tr','#00e5ff'],['te','#ff7aa8']].forEach(([key,col])=>{q.strokeStyle=col;q.fillStyle=col;q.lineWidth=2;q.beginPath();T.forEach((k,i)=>i?q.lineTo(X2(k),Y2(L.res[k][key])):q.moveTo(X2(k),Y2(L.res[k][key])));q.stroke();T.forEach(k=>{q.beginPath();q.arc(X2(k),Y2(L.res[k][key]),4,0,7);q.fill()})});
+$('ro').innerHTML=`Error on studied examples: <b style="color:#00e5ff">${r.tr.toFixed(3)}</b><br>Error on NEW examples: <b style="color:#ff7aa8">${r.te.toFixed(3)}</b>`;
+const mn=Math.min(...T.map(k=>L.res[k].te));let m='👍 Good: the line follows the real pattern and the error on new examples is low.';
+if(d<=2)m='🟦 Too simple: the line misses the pattern, so both errors are high (underfitting).';else if(d>=7&&r.te>1.5*mn)m='⚠ Studied-examples error is tiny but NEW-examples error jumped. The model memorised noise = OVERFITTING.';
+$('ins').textContent=m;mis('Slide the complexity up to 8 or 9',L.tried.has(8)||L.tried.has(9))}
+const NS=[5,10,25,50,100,250,500];
+function lab2(){POP=Array.from({length:5000},()=>170+10*gauss());TALL=[...POP].sort((a,b)=>b-a).slice(0,1500);LS2={tm:POP.reduce((a,b)=>a+b)/POP.length,m:'r',ni:1,ms:new Set()};
+shell('📊 Lab 2 · Sampling — who you ask matters','<b>🧒 In plain words:</b> We can’t ask everyone, so we ask a few people — a <b>sample</b> — and guess about the whole group. Picking people <b>at random</b> is fair. Asking only the easiest-to-reach people (say, a basketball club) makes you think everyone is tall! That unfair picking is <b>bias</b>. A bigger sample means less luck, but it can’t cure bias.<br>Each bar = how often a sample gave that average height. The <b>white line</b> is the real answer.','👉 Press “Draw” with 🎲 Random, then switch to 🏀 Convenience and press “Draw” again.','<canvas id="lc" class="lab" width="560" height="300"></canvas>','<button class="b s on" id="mr" onclick="l2m(\'r\')">🎲 Random (fair)</button><button class="b s" id="mc" onclick="l2m(\'c\')">🏀 Convenience (basketball club)</button><br><label>People in each sample: <b id="nv">10</b></label><input type="range" min="0" max="6" value="1" oninput="LS2.ni=+this.value;$(\'nv\').textContent=NS[LS2.ni]"><button class="b" onclick="l2draw()">Draw 60 samples</button><div id="ro"></div><div id="ins" class="ins">Press “Draw 60 samples”.</div>');mis('Draw once with each method',false);const g=$('lc').getContext('2d');g.fillStyle='#0d1232';g.fillRect(0,0,560,300)}
+function l2m(m){LS2.m=m;$('mr').classList.toggle('on',m==='r');$('mc').classList.toggle('on',m==='c')}
+function smp(m,n){const A=m==='r'?POP:TALL;let s=0;for(let i=0;i<n;i++)s+=A[Math.floor(Math.random()*A.length)];return s/n}
+function stats(m,n,k=60){const e=[];for(let i=0;i<k;i++)e.push(smp(m,n));const mu=e.reduce((a,b)=>a+b)/k;return{e,mu,sd:Math.sqrt(e.reduce((a,b)=>a+(b-mu)**2,0)/k)}}
+function l2draw(){const L=LS2,n=NS[L.ni],s=stats(L.m,n);L.ms.add(L.m);const g=$('lc').getContext('2d'),B=40,lo=155,hi=195,bw=520/B,cnt=new Array(B).fill(0);s.e.forEach(v=>{const i=Math.floor((v-lo)/(hi-lo)*B);if(i>=0&&i<B)cnt[i]++});
+g.fillStyle='#0d1232';g.fillRect(0,0,560,300);g.fillStyle=L.m==='r'?'#00e5ff':'#ff9f43';cnt.forEach((c,i)=>g.fillRect(20+i*bw,270-c*(250/40),bw-1,c*(250/40)));
+const tx=20+(L.tm-lo)/(hi-lo)*520;g.strokeStyle='#fff';g.setLineDash([5,4]);g.beginPath();g.moveTo(tx,10);g.lineTo(tx,270);g.stroke();g.setLineDash([]);g.fillStyle='#9aa6d6';g.font='12px system-ui';g.fillText('real average',tx+5,22);for(let v=155;v<=195;v+=10)g.fillText(v+' cm',20+(v-lo)/(hi-lo)*520-12,290);
+$('ro').innerHTML=`Average of the guesses: <b>${s.mu.toFixed(1)} cm</b> · real average: <b>${L.tm.toFixed(1)} cm</b>`;
+$('ins').textContent=L.m==='c'?(n>=100?'The guesses are tightly packed but far from the white line. More people from the same group does NOT fix bias!':'These guesses come from tall people only, so they are shifted away from the truth (bias).'):(n>=100?'Fair + big sample: guesses cluster tightly around the real answer.':'Small sample: fair on average, but each guess is a lottery (wide spread).');
+mis('Draw once with each method',L.ms.size>=2)}
+function lab3(){const T=[],A=[],D=[];for(let i=0;i<120;i++){const t=28+6*gauss();T.push(t);A.push(8*t+25*gauss());D.push(.12*t+.5*gauss())}
+const mn=Math.min(...T),mx=Math.max(...T);LS3={T,A,D,mn,mx,lo:null,col:0,mv:new Set(),r:cor(A,D)};
+shell('🔗 Lab 3 · Correlation vs Causation — together ≠ because','<b>🧒 In plain words:</b> <b>Correlation</b> means two things rise and fall together. But together doesn’t mean “because”! On hot days people buy more ice cream <i>and</i> swim more (so more accidents). The <b>heat</b> is the hidden cause of both. Each dot = one summer day. <b>r</b> is a score: near 1 = strong link, near 0 = no link.','👉 Tick “colour by temperature”, then slide the window to look at days with similar heat. Watch r!','<canvas id="lc" class="lab" width="560" height="300"></canvas>',`<label><input type="checkbox" onchange="LS3.col=this.checked?1:LS3.col;l3()"> Colour days by temperature (blue = cool, red = hot)</label><br><label>Only look at days from <b id="tv">–</b> °C (3° window)</label><input type="range" min="${Math.floor(mn)}" max="${Math.ceil(mx-3)}" step=".5" value="${Math.floor(mn)}" oninput="LS3.lo=+this.value;LS3.mv.add(Math.round(+this.value/2));$('tv').textContent=this.value;l3()"><button class="b s" onclick="LS3.lo=null;l3()">Show all days</button><div id="ro"></div><div id="ins" class="ins"></div>`);l3()}
+function l3(){const L=LS3,g=$('lc').getContext('2d'),w=560,h=300,amin=Math.min(...L.A),amax=Math.max(...L.A),dmin=Math.min(...L.D),dmax=Math.max(...L.D),X=a=>40+(a-amin)/(amax-amin)*(w-60),Y=d=>h-30-(d-dmin)/(dmax-dmin)*(h-50);
+const idx=L.T.map((t,i)=>i).filter(i=>L.lo==null||(L.T[i]>=L.lo&&L.T[i]<L.lo+3)),st=new Set(idx);g.fillStyle='#0d1232';g.fillRect(0,0,w,h);
+L.T.forEach((t,i)=>{g.globalAlpha=st.has(i)?1:.15;g.fillStyle=L.col?`hsl(${220-(t-L.mn)/(L.mx-L.mn)*220},90%,60%)`:'#ffd23f';g.beginPath();g.arc(X(L.A[i]),Y(L.D[i]),5,0,7);g.fill()});g.globalAlpha=1;
+g.fillStyle='#9aa6d6';g.font='12px system-ui';g.fillText('More ice cream sold →',w-150,h-8);g.save();g.rotate(-Math.PI/2);g.fillText('More drownings →',-h/2-40,14);g.restore();
+const rb=idx.length>=6?cor(idx.map(i=>L.A[i]),idx.map(i=>L.D[i])):null;
+$('ro').innerHTML=`All days: r = <b>${L.r.toFixed(2)}</b> · Selected ${idx.length} days: r = <b>${rb==null?'–':rb.toFixed(2)}</b>`;
+$('ins').textContent=L.lo==null?'Strong link overall. Does ice cream cause drowning? Colour the days, then look inside one temperature window.':(rb!=null&&Math.abs(rb)<.35?'Among days with the SAME heat the link almost vanishes. Heat is the hidden cause of both!':'Keep sliding to other windows and compare r.');
+mis('Slide the temperature window a few times',L.mv.size>=2)}
+/* ---------- end screen & playtest evidence ---------- */
+function acc(){let c=0,t=0;CON.forEach(k=>{c+=S.res[k].filter(x=>x).length;t+=S.res[k].length});return t?Math.round(100*c/t):0}
+function endGame(win){S.mode='end';S.acc=acc();saveHist(win);if(win)$('fbk').style.opacity=0;showEnd(win)}
+const o5=d=>[1,2,3,4,5].map(i=>`<option ${i==d?'selected':''}>${i}</option>`).join('');
+function logHTML(){const n=LOG.length,av=k=>n?(LOG.reduce((s,x)=>s+x[k],0)/n).toFixed(1):'–';return `<table><tr><th>Playtester</th><th>Understanding before→after</th><th>Quiz %</th><th>Fun</th><th>Feedback</th></tr>${LOG.map(x=>`<tr><td>${x.n}</td><td>${x.b}→${x.a}</td><td>${x.acc}</td><td>${x.f}</td><td>${x.c}</td></tr>`).join('')||'<tr><td colspan="5" class="mut">No playtests recorded yet.</td></tr>'}</table><p><b>${n}</b> playtesters · avg understanding ${av('b')} → ${av('a')} (gain <b>${n?(LOG.reduce((s,x)=>s+x.a-x.b,0)/n).toFixed(1):'–'}</b>) · avg quiz ${av('acc')}% · avg fun ${av('f')}/5</p>`}
+function showEnd(win){const rs=CON.map(k=>`<li>${k}: <b>${S.res[k].filter(x=>x).length}/${S.res[k].length}</b> correct</li>`).join('');
+ov(`<div class="panel">${win?'<span class="fl" style="left:4%;top:6%">🎉</span><span class="fl" style="right:5%;top:8%;animation-delay:1s">🏆</span><span class="fl" style="right:30%;top:4%;animation-delay:.5s">🎊</span>':''}<h1>${win?'🏆 YOU WIN! Every level cleared':'💀 Game over — both lifelines used'}</h1>${win?'<p>Congratulations — you now know overfitting, sampling and correlation vs causation!</p>':'<p>Don’t worry — every wrong answer came with an explanation. Try again!</p>'}<p>Score <b>${S.score}</b> · Coins <b>${S.coins}</b> · Question accuracy <b>${S.acc}%</b></p><ul>${rs}</ul><h3>📋 Playtest evidence</h3><p class="mut">Ask 3–5 peers to play, then record their before/after understanding and feedback (saved in this browser).</p>
+<div class="row"><div class="col"><input id="pn" placeholder="Playtester name"><br><br>Understanding BEFORE (1–5) <select id="pb2">${o5(2)}</select><br>Understanding AFTER (1–5) <select id="pa">${o5(4)}</select><br>Fun (1–5) <select id="pf">${o5(4)}</select><br><br><textarea id="pc" rows="3" style="width:100%" placeholder="What did you learn? What was confusing?"></textarea><br><button class="b" onclick="sub()">Save playtest</button></div><div class="col">${logHTML()}</div></div>
+<button class="b s" onclick="showHist()">📈 My history</button><button class="b s" onclick="copyRep()">Copy report</button><button class="b" onclick="startGame()">Play again ↺</button></div>`)}
+function sub(){const v=id=>$(id).value;LOG.push({n:esc(v('pn')||'Anonymous'),b:+v('pb2'),a:+v('pa'),f:+v('pf'),acc:S.acc||0,c:esc(v('pc'))});try{localStorage.setItem('ddlog',JSON.stringify(LOG))}catch(e){}showEnd()}
+function copyRep(){const t='Data Dash playtest report\n'+LOG.map(x=>`${x.n}: understanding ${x.b}→${x.a}, quiz ${x.acc}%, fun ${x.f}/5 — ${x.c}`).join('\n');try{navigator.clipboard.writeText(t);toast('Report copied')}catch(e){toast('Copy not available')}}
+function showLog(){ov(`<div class="panel"><h2>📋 Playtest log</h2>${logHTML()}<button class="b" onclick="menu()">Back</button></div>`)}
+function menu(){S.mode='menu';S.plan=[];S.si=0;S.qd=null;S.za=0;S.lives=3;ov(`<div class="panel menu"><span class="fl" style="left:4%;top:8%">🪙</span><span class="fl" style="right:5%;top:12%;animation-delay:1s">🌳</span><span class="fl" style="left:8%;bottom:10%;animation-delay:2s">🐦</span><span class="fl" style="right:8%;bottom:14%;animation-delay:.5s">☁️</span>
+<p class="mut" style="margin:0">🎓 Learn data science by running, jumping &amp; playing</p><h1 class="logo">DATA DASH</h1>
+<p>Grab coins, dodge the data bugs, and pick up three big ideas on the way. <b>No experience needed!</b></p>
+<div class="cds"><div class="cd" style="border-color:#f06595"><i>🧠</i><b>Overfitting</b><br>Memorising vs. really understanding.<br><span class="mut">You’ll learn: why a model must be tested on new data.</span></div><div class="cd" style="border-color:#4dabf7"><i>🎲</i><b>Sampling</b><br>Who you ask changes the answer.<br><span class="mut">You’ll learn: random vs. biased samples.</span></div><div class="cd" style="border-color:#51cf66"><i>☀️🍦</i><b>Correlation ≠ Causation</b><br>Moving together isn’t “because”.<br><span class="mut">You’ll learn: spotting a hidden cause.</span></div></div>
+<div class="keys"><span>⬅ ➡ move</span><span>␣ jump</span><span>⏸ pause</span><span>🔬 labs teach you</span><span>❓ stand in the right lane</span></div>
+<p><input id="pnm" placeholder="Your name (saves your history)" value="${esc(NAME=='Player'?'':NAME)}" oninput="setName(this.value)" style="width:min(320px,90%);text-align:center"></p><p><button class="b start" onclick="startGame()">▶ START</button></p>
+<details><summary>How scoring works &amp; what you’ll be able to do</summary><ul><li>Coin +10 · Gate +20 · Correct lane +200 · 3 ❤ per stretch (a crash sends you back a little).</li><li>A wrong lane costs one of your 2 🛟 lifelines. Lose both and it’s game over — clear all 3 labs to WIN!</li><li>Gates 1–3 are a warm-up: just run! Questions come after each lab and at gates 4–6, and they change every game.</li><li>Each lab uses fresh random data and real calculations — not fixed answers.</li><li>Goals: explain overfitting, tell random from biased samples, and say why correlation alone doesn’t prove a cause.</li></ul></details>
+<button class="b s" onclick="showHist()">📈 My history</button><button class="b s" onclick="showLog()">📋 Playtest log</button></div>`)}
+menu();requestAnimationFrame(loop);
+</script></body></html>
